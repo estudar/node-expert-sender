@@ -32,17 +32,17 @@ class Request {
   }
 
   buildXML() {
-    return xml.tag('ApiRequest', [
-      xml.tag('ApiKey', this.apiKey),
-      (this.options.returnData ? xml.tag('ReturnData', "true") : ""),
-      (this.options.verboseErrors ? xml.tag('VerboseErrors', "true") : ""),
-      this.xmlData()
-    ], {
-      attributes: {
+    return xml.tag(
+      'ApiRequest', [
+        xml.tag('ApiKey', this.apiKey),
+        xml.tag('ReturnData', true,    { if: this.options.returnData }),
+        xml.tag('VerboseErrors', true, { if: this.options.verboseErrors }),
+        ...this.xmlData()
+      ],
+      { attributes: {
         "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-        "xmlns:xs": "http://www.w3.org/2001/XMLSchema"
-      }
-    })
+        "xmlns:xs": "http://www.w3.org/2001/XMLSchema" } }
+    )
   }
 }
 

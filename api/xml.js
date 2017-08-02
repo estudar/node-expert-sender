@@ -2,15 +2,20 @@
 
 module.exports = {
   escapeValue: escapeValue,
-  objectToXMLTags: objectToXMLTags,
+  mapObject: mapObject,
   tag: XMLTag
 }
 
 function XMLTag(name, value, opts = {}) {
   const options = Object.assign({
     attributes: {},
-    escapeValue: true
+    escapeValue: true,
+    if: true,
   }, opts)
+
+  if (!options.if || (typeof options.if === "function" && !options.if())) {
+    return ""
+  }
 
   const attrs = options.attributes
 
@@ -25,10 +30,6 @@ function XMLTag(name, value, opts = {}) {
   } else {
     return `<${nameXML}${attrsXML}>${valueXML}</${nameXML}>`
   }
-}
-
-function objectToXMLTags(obj) {
-  return Object.keys(obj).map((key) => XMLTag(key, obj[key]))
 }
 
 function escapeString(str) {
@@ -57,4 +58,8 @@ function escapeValue(value) {
     default:
       return escapeString(value)
   }
+}
+
+function mapObject(obj) {
+  return Object.keys(obj).map((key) => XMLTag(key, obj[key]))
 }

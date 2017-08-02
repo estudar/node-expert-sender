@@ -34,12 +34,11 @@ class AddSubscriberRequest extends Request {
       xml.tag('Force', this.options.force),
       xml.tag('AllowUnsubscribed', this.options.allowUnsubscribed),
       xml.tag('AllowRemoved', this.options.allowRemoved),
-      (this.options.matchingMode === undefined ? // Use api default.
-        '' :
-        xml.tag('MatchingMode', this.options.matchingMode)
-      ),
+      xml.tag('MatchingMode', this.options.matchingMode, {
+        if: this.options.matchingMode !== undefined // Use API default.
+      }),
       xml.tag('ListId', this.listId),
-      ...xml.objectToXMLTags(this.subscriber)
+      ...xml.mapObject(this.subscriber)
     ], {
       attributes: {'xsi:type': "Subscriber"}
     })
