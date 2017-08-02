@@ -34,4 +34,20 @@ describe('APIClient', function () {
       }
     )
   })
+
+  describe('#dataTablesUpdateRow(tableName, primaryKeys, row)', function () {
+    let subject =
+      (tableName, primaryKeys, row) => client.dataTablesUpdateRow(tableName, primaryKeys, row)
+
+    let tableName = 'sandbox_users'
+    let primaryKeys = { email: "d@ni.el" }
+    let row = { name: "Daniel T" }
+
+    itPerformsAPICall(
+      (scope) => scope.post('/Api/DataTablesUpdateRow/').reply(204),
+      function (done) {
+        subject(tableName, primaryKeys, row).then(done).catch(done)
+      }
+    )
+  })
 })
