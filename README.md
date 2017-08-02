@@ -30,7 +30,7 @@ npm install --save @estudar/expert-sender
 ## Features
 
 - [x] Add subscribers
-- [ ] Add data table rows
+- [x] Add data table rows
 - [ ] Update data table rows
 
 All other methods can be easily implemented. Pull requests are welcome :)
