@@ -6,6 +6,7 @@ const url = require('url')
 const debug = require('debug')('expertsender')
 
 const AddSubscriberRequest = require('./requests/add_subscriber')
+const DataTablesAddRowRequest = require('./requests/data_tables/add_row')
 
 const DEFAULT_TIMEOUT = 1000
 
@@ -15,6 +16,9 @@ module.exports = class ExpertSenderAPIClient {
     this.apiKey = key
 
     this.timeout = options.timeout
+    this.defaultRequestOptions = {
+      timeout: this.timeout
+    }
   }
 
   addSubscriber(listId, subscriber) {
@@ -24,7 +28,16 @@ module.exports = class ExpertSenderAPIClient {
     let request =
       new AddSubscriberRequest(this.apiKey, listId, subscriber)
 
-    return this._perform(request, {timeout: this.timeout})
+    return this._perform(request, this.defaultRequestOptions)
+  }
+
+  dataTablesAddRow(tableName, row) {
+    assert(tableName, "You must specify a table")
+
+    let request =
+      new DataTablesAddRowRequest(this.apiKey, tableName, row)
+
+    return this._perform(request, this.defaultRequestOptions)
   }
 
   _perform(request, opts = {}) {
