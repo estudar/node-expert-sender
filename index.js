@@ -1,3 +1,3 @@
-const APIClient = require('./lib/api/client')
+const APIClient = require('./api/client')
 
 module.exports = APIClient
