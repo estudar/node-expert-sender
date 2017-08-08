@@ -29,7 +29,9 @@ class AddSubscriberRequest extends Request {
   }
 
   xmlData() {
-    return xml.tag('Data', [
+    const subscribers = [].concat(this.subscriber)
+
+    const subscriberXML = (subscriber) => { return [
       xml.tag('Mode', this.options.mode),
       xml.tag('Force', this.options.force),
       xml.tag('AllowUnsubscribed', this.options.allowUnsubscribed),
@@ -38,10 +40,19 @@ class AddSubscriberRequest extends Request {
         if: this.options.matchingMode !== undefined // Use API default.
       }),
       xml.tag('ListId', this.listId),
-      ...xml.mapObject(this.subscriber)
-    ], {
-      attributes: {'xsi:type': "Subscriber"}
-    })
+      ...xml.mapObject(subscriber)
+    ] }
+
+    if (subscribers.length > 1) {
+      return xml.tag('Data',
+        subscriberXML(subscribers[0]),
+        { attributes: {'xsi:type': "Subscriber"} }
+      )
+    } else {
+      return xml.tag('MultiData',
+        subscribers.map(sub => xml.tag('Subscriber', subscriberXML(sub)))
+      )
+    }
   }
 }
 

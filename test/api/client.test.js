@@ -10,7 +10,10 @@ describe('APIClient', function () {
       (listId, subscriber) => client.addSubscriber(listId, subscriber)
 
     let listId = 53
-    let subscriber = { email: 'd@ni.el', firstname: 'Daniel' }
+    let subscriber = [
+      { email: 'd@ni.el', firstname: 'Daniel' },
+      { email: 'sc@rle.tt', firstname: 'Scarlett' }
+    ]
 
     itPerformsAPICall(
       (scope) => scope.post('/Api/Subscribers/').reply(201),
