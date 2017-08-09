@@ -7,6 +7,7 @@ const debug = require('debug')('expertsender')
 
 const AddSubscriberRequest = require('./requests/add_subscriber')
 const DataTablesAddRowRequest = require('./requests/data_tables/add_row')
+const DataTablesAddMultipleRowsRequest = require('./requests/data_tables/add_multiple_rows')
 const DataTablesUpdateRowRequest = require('./requests/data_tables/update_row')
 
 const DEFAULT_TIMEOUT = 1000
@@ -37,6 +38,15 @@ module.exports = class ExpertSenderAPIClient {
 
     let request =
       new DataTablesAddRowRequest(this.apiKey, tableName, row)
+
+    return this._perform(request, this.defaultRequestOptions)
+  }
+
+  dataTablesAddMultipleRows(tableName, rows) {
+    assert(tableName, "You must specify a table")
+
+    let request =
+      new DataTablesAddMultipleRowsRequest(this.apiKey, tableName, rows)
 
     return this._perform(request, this.defaultRequestOptions)
   }

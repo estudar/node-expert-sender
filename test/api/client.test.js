@@ -28,12 +28,30 @@ describe('APIClient', function () {
       (tableName, row) => client.dataTablesAddRow(tableName, row)
 
     let tableName = 'sandbox_users'
-    let row = { name: "Daniel", email: "d@ni.el" }
+    let row = { name: "Daniel", email: `d${+new Date()}@ni.el` }
 
     itPerformsAPICall(
       (scope) => scope.post('/Api/DataTablesAddRow/').reply(201),
       function (done) {
         subject(tableName, row).then(done).catch(done)
+      }
+    )
+  })
+
+  describe('#dataTablesAddMultipleRows(tableName, rows)', function () {
+    let subject =
+      (tableName, rows) => client.dataTablesAddMultipleRows(tableName, rows)
+
+    let tableName = 'sandbox_users'
+    let rows = [
+      { name: "Daniel", email: `d${+new Date()}@ni.el` },
+      { name: "Danilo", email: `d${+new Date()}@ni.lo` }
+    ]
+
+    itPerformsAPICall(
+      (scope) => scope.post('/Api/DataTablesAddMultipleRows/').reply(201),
+      function (done) {
+        subject(tableName, rows).then(done).catch(done)
       }
     )
   })
