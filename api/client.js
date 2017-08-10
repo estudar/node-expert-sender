@@ -10,6 +10,8 @@ const DataTablesAddRowRequest = require('./requests/data_tables/add_row')
 const DataTablesAddMultipleRowsRequest = require('./requests/data_tables/add_multiple_rows')
 const DataTablesUpdateRowRequest = require('./requests/data_tables/update_row')
 
+const ExpertSenderAPIError = require('./error')
+
 const DEFAULT_TIMEOUT = 1000
 
 module.exports = class ExpertSenderAPIClient {
@@ -82,15 +84,11 @@ module.exports = class ExpertSenderAPIClient {
         .on('aborted', reject)
         .on('data', (data) => body.push(data))
         .on('end', () => {
-          if (message.statusCode < 400) {
-            if (!message['content-length']) { return resolve(null) }
-            else { return resolve(body) }
-          } else {
-            reject(new Error(
-              `Unexpected status code "${message.statusCode}"\n${
-                Buffer.concat(body).toString()}`
-            ))
-          }
+          const response = Buffer.concat(body).toString('utf8')
+          const error = ExpertSenderAPIError.buildFromIncomingMessage(message, response)
+
+          if (error) { reject(error) }
+          else { resolve(response) }
         })
       })
       .on('error', reject)

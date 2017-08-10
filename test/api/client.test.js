@@ -1,5 +1,6 @@
 'use strict'
 
+const assert = require('assert')
 const APIClient = require('../../api/client')
 
 describe('APIClient', function () {
@@ -54,6 +55,27 @@ describe('APIClient', function () {
         subject(tableName, rows).then(done).catch(done)
       }
     )
+
+    describe('when request fails', function () {
+      it('fails with APIError object', function (done) {
+        assertRequests(
+          (scope) => { return scope
+              .post('/Api/DataTablesAddMultipleRows/')
+              .reply(400, '<ApiResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><ErrorMessage><Code>400</Code><Messages><Message for="Row 1">Request does not contain required columns.</Message></Messages></ErrorMessage></ApiResponse>')
+          },
+          (callback) => { callback(null, subject(tableName, [{xxx: "X"}])) },
+          (err, result) => {
+            if (err) { return done(err) }
+
+            result.catch(error => {
+              assert.strictEqual('ExpertSenderAPIError', error.name)
+              assert.ok(error.messages instanceof Array, 'expect error.messages to be an Array')
+              assert.strictEqual('Row 1: Request does not contain required columns.', error.messages[0])
+            }).then(done, done)
+          }
+        )
+      })
+    })
   })
 
   describe('#dataTablesUpdateRow(tableName, primaryKeys, row)', function () {
